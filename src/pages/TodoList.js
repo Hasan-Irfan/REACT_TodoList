@@ -1,5 +1,4 @@
-import React from "react";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Loader } from "./Loader";
 import { Task } from "./Task";
 import { auth, db } from "./Firebase";
@@ -11,7 +10,6 @@ import {
   collection,
   updateDoc,
   deleteDoc,
-  addDoc,
 } from "firebase/firestore";
 
 export const TodoList = () => {
@@ -40,13 +38,79 @@ export const TodoList = () => {
     });
   };
 
+  const moveUp = async (index) => {
+    if (index > 0) {
+      const updatedTasks = [...todoList];
+      const taskToMove = updatedTasks[index];
+      const previousTask = updatedTasks[index - 1];
+
+      // Swap tasks in the list
+      updatedTasks[index] = previousTask;
+      updatedTasks[index - 1] = taskToMove;
+
+      // Swap order fields
+      const tempOrder = taskToMove.order;
+      taskToMove.order = previousTask.order;
+      previousTask.order = tempOrder;
+
+      setTodoList(updatedTasks);
+
+      // Update order in database
+      try {
+        const user = auth.currentUser;
+        await updateDoc(doc(db, `users/${user.uid}/tasks/${taskToMove.id}`), {
+          order: taskToMove.order,
+        });
+        await updateDoc(doc(db, `users/${user.uid}/tasks/${previousTask.id}`), {
+          order: previousTask.order,
+        });
+        console.log("Task order updated successfully");
+      } catch (error) {
+        console.error("Error updating task order: ", error);
+      }
+    }
+  };
+
+  const moveDown = async (index) => {
+    if (index < todoList.length - 1) {
+      const updatedTasks = [...todoList];
+      const taskToMove = updatedTasks[index];
+      const nextTask = updatedTasks[index + 1];
+
+      // Swap tasks in the list
+      updatedTasks[index] = nextTask;
+      updatedTasks[index + 1] = taskToMove;
+
+      // Swap order fields
+      const tempOrder = taskToMove.order;
+      taskToMove.order = nextTask.order;
+      nextTask.order = tempOrder;
+
+      setTodoList(updatedTasks);
+
+      // Update order in database
+      try {
+        const user = auth.currentUser;
+        await updateDoc(doc(db, `users/${user.uid}/tasks/${taskToMove.id}`), {
+          order: taskToMove.order,
+        });
+        await updateDoc(doc(db, `users/${user.uid}/tasks/${nextTask.id}`), {
+          order: nextTask.order,
+        });
+        console.log("Task order updated successfully");
+      } catch (error) {
+        console.error("Error updating task order: ", error);
+      }
+    }
+  };
+
   const fetchTasks = async (userID) => {
     const tasksRef = collection(db, `users/${userID}/tasks`);
     const tasksSnapshot = await getDocs(tasksRef);
     const tasks = tasksSnapshot.docs.map((doc) => ({
       id: doc.id,
       ...doc.data(),
-    }));
+    })).sort((a, b) => a.order - b.order); // Sort by order
     setTodoList(tasks);
     setIsLoading(false);
   };
@@ -115,6 +179,7 @@ export const TodoList = () => {
         taskName: newTask,
         createdAt: new Date().toLocaleString(),
         completion: false,
+        order: todoList.length, // Order field
       };
       setTodoList([...todoList, task]);
 
@@ -122,7 +187,12 @@ export const TodoList = () => {
       const tasksRef = collection(db, `users/${user.uid}/tasks`);
       const newTaskRef = doc(tasksRef);
       try {
-        await setDoc(newTaskRef, { taskName: newTask, completion: false, createdAt: new Date().toLocaleString() });
+        await setDoc(newTaskRef, {
+          taskName: newTask,
+          completion: false,
+          createdAt: new Date().toLocaleString(),
+          order: todoList.length, // Order field
+        });
         console.log("Task added successfully");
         setNewTask("");
       } catch (error) {
@@ -143,7 +213,7 @@ export const TodoList = () => {
     }
   };
 
-  const onComplete =async (taskID) => {
+  const onComplete = async (taskID) => {
     setTodoList(
       todoList.map((t) =>
         t.id === taskID ? { ...t, completion: !t.completion } : t
@@ -159,10 +229,9 @@ export const TodoList = () => {
     } catch (error) {
       console.error("Error updating task: ", error);
     }
-    
   };
 
-  if(isLoading){
+  if (isLoading) {
     return <Loader />;
   } else if (userDetails) {
     return (
@@ -181,7 +250,7 @@ export const TodoList = () => {
           <button onClick={addtoList}>Add</button>
         </div>
         <div className="taskList">
-          {todoList.map((task) => (
+          {todoList.map((task, index) => (
             <Task
               key={task.id}
               taskName={task.taskName}
@@ -191,6 +260,9 @@ export const TodoList = () => {
               isEditing={isEditing}
               editedTask={editedTask}
               editedTaskID={editedTaskID}
+              index={index}
+              moveUp={moveUp}
+              moveDown={moveDown}
               handleUpdate={handleUpdate}
               deleteFromList={deleteFromList}
               onComplete={onComplete}
@@ -204,5 +276,5 @@ export const TodoList = () => {
         </button>
       </div>
     );
-  } 
+  }
 };
