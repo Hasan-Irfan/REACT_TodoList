@@ -162,6 +162,10 @@ export const TodoList = () => {
     
   };
 
+  if(isLoading){
+    return <Loader />;
+  }
+
   if (userDetails) {
     return (
       <div className="mainApp">
@@ -189,7 +193,6 @@ export const TodoList = () => {
               isEditing={isEditing}
               editedTask={editedTask}
               editedTaskID={editedTaskID}
-              isLoading={isLoading}
               handleUpdate={handleUpdate}
               deleteFromList={deleteFromList}
               onComplete={onComplete}
