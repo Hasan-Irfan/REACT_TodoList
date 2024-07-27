@@ -204,9 +204,5 @@ export const TodoList = () => {
         </button>
       </div>
     );
-  } else {
-    return (
-      <Loader />
-    );
-  }
+  } 
 };
