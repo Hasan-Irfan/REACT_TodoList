@@ -164,9 +164,7 @@ export const TodoList = () => {
 
   if(isLoading){
     return <Loader />;
-  }
-
-  if (userDetails) {
+  } else if (userDetails) {
     return (
       <div className="mainApp">
         <h2>
