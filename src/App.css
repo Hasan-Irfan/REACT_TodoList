@@ -3,7 +3,7 @@ html, body {
   height: 100%;
   margin: 0;
   overflow: hidden; /* Prevent body scrollbars */
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family:'Franklin Gothic Medium', 'Arial Narrow';
   background-image: url('line-background-wave-gradient-template-design_483537-5079.jpg');
   background-repeat: no-repeat;
   background-size: cover;
