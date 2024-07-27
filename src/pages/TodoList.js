@@ -21,6 +21,7 @@ export const TodoList = () => {
   const [editedTaskID, setEditedTaskID] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [userDetails, setUserDetails] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   const fetchUserData = () => {
     auth.onAuthStateChanged(async (user) => {
@@ -47,11 +48,11 @@ export const TodoList = () => {
       ...doc.data(),
     }));
     setTodoList(tasks);
+    setIsLoading(false);
   };
 
   useEffect(() => {
     fetchUserData();
-    //fetchTasks();
   }, []);
 
   async function handleLogout() {
@@ -188,6 +189,7 @@ export const TodoList = () => {
               isEditing={isEditing}
               editedTask={editedTask}
               editedTaskID={editedTaskID}
+              isLoading={isLoading}
               handleUpdate={handleUpdate}
               deleteFromList={deleteFromList}
               onComplete={onComplete}
