@@ -1,5 +1,6 @@
 import React from 'react';
 import { Loader } from './Loader';
+import { height } from '@fortawesome/free-regular-svg-icons/faAddressBook';
 
 
 export const Task = (props) => {
@@ -20,7 +21,10 @@ export const Task = (props) => {
             <button onClick={() => props.saveEdit(props.id)}>Save</button>
           </div>
         ) : props.isLoading ?  (
-          <Loader />
+          <div className='loading'>
+            <Loader />
+          </div>
+          
         ) : (
           <div className='mainDisplay'>
             <h2 style={{ color: props.completion ? 'green' : 'black' }}>

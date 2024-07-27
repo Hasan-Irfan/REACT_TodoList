@@ -94,6 +94,11 @@ html, body {
   margin: 2px 0;
 }
 
+.loading{
+  height: 300px;
+  width: 300px;
+}
+
 .task-actions {
   display: flex;
   align-items: center;
