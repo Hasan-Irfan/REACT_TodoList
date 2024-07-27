@@ -168,7 +168,7 @@ export const TodoList = () => {
     return (
       <div className="mainApp">
         <h2>
-          Welcome {userDetails ? userDetails.firstName : "Guest"}'s ToDoList
+          Welcome to {userDetails ? userDetails.firstName : "Guest"}'s ToDoList
         </h2>
         <p>You can add, delete, complete, or edit tasks</p>
         <div className="addTask">

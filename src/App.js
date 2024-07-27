@@ -1,11 +1,11 @@
 import './App.css';
 import React, { useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { TodoList } from './pages/TodoList';
 import { SignIn } from './pages/SignIn';
 import { Login } from './pages/Login';
 import { useState } from "react";
-
+import { auth } from "./pages/Firebase";
 
 function App() {
   const [user,setUser]=useState();
