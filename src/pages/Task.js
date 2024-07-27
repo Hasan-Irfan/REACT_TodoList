@@ -1,4 +1,6 @@
 import React from 'react';
+import { Loader } from './Loader';
+
 
 export const Task = (props) => {
   return (
@@ -17,6 +19,8 @@ export const Task = (props) => {
             />
             <button onClick={() => props.saveEdit(props.id)}>Save</button>
           </div>
+        ) : props.isLoading ?  (
+          <Loader />
         ) : (
           <div className='mainDisplay'>
             <h2 style={{ color: props.completion ? 'green' : 'black' }}>
@@ -25,7 +29,6 @@ export const Task = (props) => {
             <div>
               <p>Created At: {new Date(props.createdAt).toLocaleString()}</p>
             </div>
-
           </div>
         )}
       </div>
